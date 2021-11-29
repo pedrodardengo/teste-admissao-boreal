@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "admission_test_boreal"
+version = "0.1.0"
+description = ""
+authors = ["pedro <pedro.mesquita.ext@decode.buzz>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.70.0"
+uvicorn = {extras = ["standard"], version = "^0.15.0"}
+python-multipart = "^0.0.5"
+sqlmodel = "^0.0.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pre-commit = "^2.15.0"
+commitizen = "^2.20.0"
+black = "^21.11b1"
+mypy = "^0.910"
+python-dotenv = "^0.19.2"
