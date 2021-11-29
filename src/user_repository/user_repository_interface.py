@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
+from src.auth.user_model import StoredUser
+
 
 class UserRepository(ABC):
     @abstractmethod
@@ -21,9 +23,9 @@ class UserRepository(ABC):
         ...
 
     @abstractmethod
-    def find_one(self, user_id: int):
+    def find_one(self, user_id: int) -> StoredUser:
         ...
 
     @abstractmethod
-    def find(self, email: str):
+    def find(self, email: str) -> StoredUser:
         ...

@@ -1,19 +1,35 @@
 import re
+import uuid
+from typing import Optional
 
+from passlib.context import CryptContext
 from pydantic import BaseModel, validator
 
+crypto = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-class User(BaseModel):
-    email: str
+
+class UserIdentifier(BaseModel):
+    username: str
+
+
+class StoredUser(UserIdentifier):
+    salt_dot_hash: str
+
+    def is_password_valid(self, password: str) -> bool:
+        salt, hashed_password = self.salt_dot_hash.split(".")
+        return crypto.verify(password + salt, hashed_password)
+
+
+class IncomingUser(UserIdentifier):
     password: str
 
-    @validator("email")
-    def email_must_be_valid(cls, v):
+    @validator("username")
+    def username_must_be_an_email(cls, v):
         regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
         if re.fullmatch(regex, v):
             raise ValueError("Passed email is not valid")
 
-    @validator("passoword")
+    @validator("password")
     def password_must_be_strong(cls, v):
         at_least_8_characters = len(v) > 8
         at_least_one_digit = re.search(r"\d", v) is not None
@@ -33,3 +49,9 @@ class User(BaseModel):
         )
         if not strong_password:
             raise ValueError("Passed email is not valid")
+
+    def get_salt_dot_hash(self, salt: Optional[str] = None):
+        if salt is None:
+            salt = uuid.uuid4().hex
+        hashed_password = crypto.hash(self.password + salt)
+        return f"{salt}.{hashed_password}"

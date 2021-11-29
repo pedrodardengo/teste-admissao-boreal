@@ -4,13 +4,17 @@ from typing import Optional
 import sqlmodel
 from sqlalchemy.exc import NoResultFound
 
+from src.auth.user_model import StoredUser
+from src.exceptions.invalid_username_or_password import InvalidUsernameOrPassword
+from src.exceptions.user_already_exists import UserAlreadyExists
+from src.exceptions.user_dont_exist import UserDontExists
 from src.settings.settings import settings_factory
 from src.user_repository.user_repository_interface import UserRepository
 
 
-class StoredUser(sqlmodel.SQLModel, table=True):
+class StoredUserTable(StoredUser, sqlmodel.SQLModel, table=True):
     user_id: int = sqlmodel.Field(default=None, primary_key=True)
-    email: str = sqlmodel.Field()
+    username: str = sqlmodel.Field()
     salt_dot_hash: str = sqlmodel.Field()
 
 
@@ -27,25 +31,30 @@ class SQLUserRepository(UserRepository):
         sqlmodel.SQLModel.metadata.create_all(engine, checkfirst=True)
         self.session = sqlmodel.Session(engine)
 
-    def add_user(self, email: str, salt_dot_hash: str) -> None:
-        user = StoredUser(email=email, salt_dot_hash=salt_dot_hash)
-        # try:
+    def add_user(self, username: str, salt_dot_hash: str) -> None:
+        user = StoredUserTable(username=username, salt_dot_hash=salt_dot_hash)
+        stored_user = None
+        try:
+            stored_user = self.find(user.username)
+        except InvalidUsernameOrPassword:
+            pass
+        if stored_user is not None:
+            raise UserAlreadyExists
         self.session.add(user)
         self.session.commit()
         self.session.refresh(user)
-        # except IntegrityError as e:
-        #    ...
-        # raise Exception
 
     def delete_user(self, user_id: int) -> None:
         try:
-            statement = sqlmodel.select(StoredUser).where(StoredUser.user_id == user_id)
-            invalid_cpf = self.session.exec(statement).one()
-            if invalid_cpf is not None:
-                self.session.delete(invalid_cpf)
+            statement = sqlmodel.select(StoredUserTable).where(
+                StoredUserTable.user_id == user_id
+            )
+            user = self.session.exec(statement).one()
+            if user is not None:
+                self.session.delete(user)
             self.session.commit()
         except NoResultFound:
-            pass
+            raise UserDontExists
 
     def update_user(
         self,
@@ -55,11 +64,18 @@ class SQLUserRepository(UserRepository):
     ) -> None:
         ...
 
-    def find_one(self, user_id: int) -> StoredUser:
+    def find_by_id(self, user_id: int) -> StoredUser:
         ...
 
-    def find(self, email: str) -> list[StoredUser]:
-        ...
+    def find(self, username: str) -> StoredUser:
+        try:
+            statement = sqlmodel.select(StoredUserTable).where(
+                StoredUserTable.username == username
+            )
+            user = self.session.exec(statement).one()
+            return StoredUser(username=user.username, salt_dot_hash=user.salt_dot_hash)
+        except NoResultFound:
+            raise InvalidUsernameOrPassword
 
 
 @lru_cache
