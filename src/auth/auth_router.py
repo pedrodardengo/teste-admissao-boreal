@@ -6,7 +6,7 @@ from src.auth.token_model import Token
 from src.auth.user_model import IncomingUser, StoredUser, UserIdentifier
 
 router = APIRouter(prefix="/auth")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 def get_user_from_token(
@@ -23,7 +23,7 @@ def get_user_from_token(
     return auth_service.retrieve_user_from_token(token)
 
 
-@router.post("/signup")
+@router.post("signup")
 async def sign_up(
     user: IncomingUser, auth_service: AuthService = Depends(auth_service_factory)
 ) -> None:

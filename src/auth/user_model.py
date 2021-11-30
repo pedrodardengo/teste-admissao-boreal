@@ -16,7 +16,7 @@ class StoredUser(UserIdentifier):
     salt_dot_hash: str
 
     def is_password_valid(self, password: str) -> bool:
-        salt, hashed_password = self.salt_dot_hash.split(".")
+        salt, hashed_password = self.salt_dot_hash.split(" ")
         return crypto.verify(password + salt, hashed_password)
 
 
@@ -59,4 +59,4 @@ class IncomingUser(UserIdentifier):
         if salt is None:
             salt = uuid.uuid4().hex
         hashed_password = crypto.hash(self.password + salt)
-        return f"{salt}.{hashed_password}"
+        return f"{salt} {hashed_password}"
