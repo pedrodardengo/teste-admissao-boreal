@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from src.auth.auth_service import AuthService, auth_service_factory
 from src.auth.token_model import Token
-from src.auth.user_model import IncomingUser, StoredUser, UserIdentifier
+from src.auth.user_model import IncomingUser, StoredUser
 
 router = APIRouter(prefix="/auth")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
@@ -23,7 +23,7 @@ def get_user_from_token(
     return auth_service.retrieve_user_from_token(token)
 
 
-@router.post("signup")
+@router.post("/signup")
 async def sign_up(
     user: IncomingUser, auth_service: AuthService = Depends(auth_service_factory)
 ) -> None:
@@ -51,15 +51,3 @@ async def get_access_token(
     user = IncomingUser(username=form_data.username, password=form_data.password)
     username = auth_service.authenticate_user(user)
     return auth_service.create_access_token(username)
-
-
-@router.get("/me")
-async def get_request_user(
-    request_user: StoredUser = Depends(get_user_from_token),
-) -> UserIdentifier:
-    """
-    Provides the user from this request's token.
-    :param request_user: the User provided from get_user_from_token
-    :return: only the username
-    """
-    return UserIdentifier(username=request_user.username)

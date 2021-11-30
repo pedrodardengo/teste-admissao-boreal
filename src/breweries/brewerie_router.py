@@ -32,5 +32,5 @@ async def get_all_breweries(request_user: StoredUser = Depends(get_user_from_tok
     url = "https://api.openbrewerydb.org/breweries/"
     async with aiohttp.request("GET", url=url) as response:
         response_data = await response.json()
-    all_breweries = [b_data["name"] for b_data in response_data]
+    all_breweries = list({b_data["name"] for b_data in response_data})
     return BreweriesList(breweries=all_breweries)
