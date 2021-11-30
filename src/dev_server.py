@@ -1,16 +1,16 @@
-import uvicorn
-from dotenv import find_dotenv, load_dotenv
+import os
 
-from src.main import app
+import uvicorn
+
+from src import main
 
 if __name__ == "__main__":
-    load_dotenv(find_dotenv(".env"))
-
-    app.openapi()
+    os.environ["DB_CONNECTION_STRING"] = "sqlite://"
+    os.environ["TOKEN_SECRET"] = "AU890SU8903HU9FAU89as9783e783rfasdf9"
     uvicorn.run(
-        f"{__name__}:app",
+        f"{main.__name__}:app",
         host="0.0.0.0",
-        port=7000,
+        port=8000,
         log_level="debug",
         workers=1,
         reload=True,

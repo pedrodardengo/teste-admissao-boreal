@@ -45,6 +45,7 @@ class SQLUserRepository(UserRepository):
             session.add(user)
             session.commit()
             session.refresh(user)
+            return username
 
     def delete_user(self, user_id: int) -> Optional[int]:
         with sqlmodel.Session(self.__engine) as session:

@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: teste-boreal
+    ports:
+    - 8000:8000
+    environment:
+    - DB_CONNECTION_STRING=postgresql://postgres:postgres@postgres:5432/postgres
+    - TOKEN_SECRET=AU890SU8903HU9FAU89as9783e789
+  postgres:
+    image: postgres
+    ports:
+    - 5432:5432
+    environment:
+    - POSTGRES_PASSWORD=postgres

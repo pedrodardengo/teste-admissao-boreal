@@ -23,6 +23,6 @@ COPY --from=build-image $VIRTUAL_ENV $VIRTUAL_ENV
 WORKDIR /app
 COPY src/ ./src
 # Run it!
-EXPOSE 7000
+EXPOSE 8000
 ENTRYPOINT ["uvicorn", "src.main:app"]
 CMD ["--host", "0.0.0.0", "--workers", "3"]
