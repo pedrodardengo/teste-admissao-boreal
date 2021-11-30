@@ -26,10 +26,10 @@ class UserRepository(ABC):
 
     @abstractmethod
     def update_user(
-        self,
-        user_id: int,
-        username: Optional[str] = None,
-        salt_blank_hash: Optional[str] = None,
+            self,
+            user_id: int,
+            username: Optional[str] = None,
+            salt_blank_hash: Optional[str] = None,
     ) -> None:
         """
         Updates an user using by reference its id;

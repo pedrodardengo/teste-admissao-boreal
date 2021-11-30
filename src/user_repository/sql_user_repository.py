@@ -7,11 +7,8 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.pool import StaticPool
 
 from src.auth.user_model import StoredUser
-from src.exceptions.exceptions import (
-    InvalidUsernameOrPassword,
-    UserAlreadyExists,
-    UserDontExists,
-)
+from src.exceptions.exceptions import (InvalidUsernameOrPassword,
+                                       UserAlreadyExists, UserDontExists)
 from src.settings.settings import Settings, settings_factory
 from src.user_repository.user_repository_interface import UserRepository
 
@@ -69,10 +66,10 @@ class SQLUserRepository(UserRepository):
                 raise UserDontExists()
 
     def update_user(
-        self,
-        user_id: int,
-        email: Optional[str] = None,
-        salt_blank_hash: Optional[str] = None,
+            self,
+            user_id: int,
+            email: Optional[str] = None,
+            salt_blank_hash: Optional[str] = None,
     ) -> None:
         ...
 
@@ -95,6 +92,6 @@ class SQLUserRepository(UserRepository):
 
 @lru_cache
 def sql_user_repository_factory(
-    settings: Settings = Depends(settings_factory),
+        settings: Settings = Depends(settings_factory),
 ) -> SQLUserRepository:
     return SQLUserRepository(settings)

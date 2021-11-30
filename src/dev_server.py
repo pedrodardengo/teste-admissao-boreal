@@ -4,7 +4,6 @@ from dotenv import find_dotenv, load_dotenv
 from src.main import app
 
 if __name__ == "__main__":
-
     load_dotenv(find_dotenv(".env"))
 
     app.openapi()

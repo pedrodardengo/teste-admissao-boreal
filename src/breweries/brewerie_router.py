@@ -11,7 +11,7 @@ router = APIRouter(prefix="/breweries")
 
 @router.post("/")
 async def post_order(
-    order: Order, request_user: StoredUser = Depends(get_user_from_token)
+        order: Order, request_user: StoredUser = Depends(get_user_from_token)
 ):
     """
     Implements the second assignment of the test.

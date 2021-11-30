@@ -10,8 +10,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 def get_user_from_token(
-    token: str = Depends(oauth2_scheme),
-    auth_service: AuthService = Depends(auth_service_factory),
+        token: str = Depends(oauth2_scheme),
+        auth_service: AuthService = Depends(auth_service_factory),
 ) -> StoredUser:
     """
     Every end point that wants to be protected by a OAuth2 standard needs to depend on this function.
@@ -25,7 +25,7 @@ def get_user_from_token(
 
 @router.post("/signup")
 async def sign_up(
-    user: IncomingUser, auth_service: AuthService = Depends(auth_service_factory)
+        user: IncomingUser, auth_service: AuthService = Depends(auth_service_factory)
 ) -> None:
     """
     Signs up the user in the repository, it delegates to the auth service the task of interacting with the repository.
@@ -38,8 +38,8 @@ async def sign_up(
 
 @router.post("/token", response_model=Token)
 async def get_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    auth_service: AuthService = Depends(auth_service_factory),
+        form_data: OAuth2PasswordRequestForm = Depends(),
+        auth_service: AuthService = Depends(auth_service_factory),
 ) -> Token:
     """
     Retrieves a token given that a form data containing an existing username with correct password.

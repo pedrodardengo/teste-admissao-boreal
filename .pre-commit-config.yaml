@@ -55,15 +55,6 @@ repos:
     args: [--filter-files]
     files: \.py$
 
-- repo: https://github.com/psf/black
-  rev: 21.9b0
-  hooks:
-  - id: black
-    name: 'black: formats python code according to standards.'
-    entry: bash -c 'black "$@"; git add -u' --
-    language: python
-    files: \.py$
-
         # Linters
 - repo: https://github.com/PyCQA/flake8
   rev: 4.0.1

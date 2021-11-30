@@ -3,11 +3,9 @@ from jose import jwt
 
 from src.auth.token_model import Token
 from src.auth.user_model import IncomingUser, StoredUser
-from src.exceptions.exceptions import (
-    CouldNotValidate,
-    InvalidUsernameOrPassword,
-    TokenHasExpired,
-)
+from src.exceptions.exceptions import (CouldNotValidate,
+                                       InvalidUsernameOrPassword,
+                                       TokenHasExpired)
 from src.settings.settings import Settings, settings_factory
 from src.user_repository.sql_user_repository import sql_user_repository_factory
 from src.user_repository.user_repository_interface import UserRepository
@@ -73,7 +71,7 @@ class AuthService:
 
 
 def auth_service_factory(
-    user_repository: UserRepository = Depends(sql_user_repository_factory),
-    settings: Settings = Depends(settings_factory),
+        user_repository: UserRepository = Depends(sql_user_repository_factory),
+        settings: Settings = Depends(settings_factory),
 ) -> AuthService:
     return AuthService(user_repository, settings)

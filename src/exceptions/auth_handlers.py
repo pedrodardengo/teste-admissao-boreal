@@ -2,17 +2,14 @@ from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from src.exceptions.exceptions import (
-    CouldNotValidate,
-    InvalidUsernameOrPassword,
-    TokenHasExpired,
-    UserAlreadyExists,
-    UserDontExists,
-)
+from src.exceptions.exceptions import (CouldNotValidate,
+                                       InvalidUsernameOrPassword,
+                                       TokenHasExpired, UserAlreadyExists,
+                                       UserDontExists)
 
 
 def invalid_username_or_password_handler(
-    request: Request, exc: InvalidUsernameOrPassword
+        request: Request, exc: InvalidUsernameOrPassword
 ) -> JSONResponse:
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -21,7 +18,7 @@ def invalid_username_or_password_handler(
 
 
 def user_already_exists_handler(
-    request: Request, exc: UserAlreadyExists
+        request: Request, exc: UserAlreadyExists
 ) -> JSONResponse:
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
