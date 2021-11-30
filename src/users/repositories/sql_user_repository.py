@@ -6,8 +6,6 @@ from fastapi import Depends
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.pool import StaticPool
 
-from src.exceptions.exceptions import (InvalidUsernameOrPassword,
-                                       UserAlreadyExists, UserDontExists)
 from src.settings.settings import Settings, settings_factory
 from src.users.user_model import StoredUser
 from src.users.user_repository_interface import UserRepository
@@ -38,21 +36,17 @@ class SQLUserRepository(UserRepository):
             self.__engine = sqlmodel.create_engine(settings.DB_CONNECTION_STRING)
         sqlmodel.SQLModel.metadata.create_all(self.__engine, checkfirst=True)
 
-    def add_user(self, username: str, salt_blank_hash: str) -> None:
+    def add_user(self, username: str, salt_blank_hash: str) -> Optional[str]:
         with sqlmodel.Session(self.__engine) as session:
             user = StoredUserTable(username=username, salt_blank_hash=salt_blank_hash)
-            stored_user = None
-            try:
-                stored_user = self.find(user.username)
-            except InvalidUsernameOrPassword:
-                pass
+            stored_user = self.find(user.username)
             if stored_user is not None:
-                raise UserAlreadyExists(username=username)
+                return None
             session.add(user)
             session.commit()
             session.refresh(user)
 
-    def delete_user(self, user_id: int) -> None:
+    def delete_user(self, user_id: int) -> Optional[int]:
         with sqlmodel.Session(self.__engine) as session:
             try:
                 statement = sqlmodel.select(StoredUserTable).where(
@@ -62,8 +56,9 @@ class SQLUserRepository(UserRepository):
                 if user is not None:
                     session.delete(user)
                 session.commit()
+                return user_id
             except NoResultFound:
-                raise UserDontExists()
+                return None
 
     def update_user(
             self,
@@ -76,7 +71,7 @@ class SQLUserRepository(UserRepository):
     def find_by_id(self, user_id: int) -> StoredUser:
         ...
 
-    def find(self, username: str) -> StoredUser:
+    def find(self, username: str) -> Optional[StoredUser]:
         with sqlmodel.Session(self.__engine) as session:
             try:
                 statement = sqlmodel.select(StoredUserTable).where(
@@ -87,7 +82,7 @@ class SQLUserRepository(UserRepository):
                     username=user.username, salt_blank_hash=user.salt_blank_hash
                 )
             except NoResultFound:
-                raise InvalidUsernameOrPassword()
+                return None
 
 
 @lru_cache

@@ -6,7 +6,7 @@ from jose import jwt
 from src.auth.token_model import Token
 from src.exceptions.exceptions import (CouldNotValidate,
                                        InvalidUsernameOrPassword,
-                                       TokenHasExpired)
+                                       TokenHasExpired, UserAlreadyExists)
 from src.settings.settings import Settings, settings_factory
 from src.users.repositories.sql_user_repository import \
     sql_user_repository_factory
@@ -33,7 +33,9 @@ class AuthService:
         :return: None
         """
         salt_blank_hash = user.get_salt_blank_hash()
-        self.__user_repo.add_user(user.username, salt_blank_hash)
+        username = self.__user_repo.add_user(user.username, salt_blank_hash)
+        if username is None:
+            raise UserAlreadyExists(username=user.username)
 
     def authenticate_user(self, user: IncomingUser) -> str:
         """
@@ -42,6 +44,8 @@ class AuthService:
         :return: the verified user's username
         """
         stored_user = self.__user_repo.find(user.username)
+        if stored_user is None:
+            raise InvalidUsernameOrPassword()
         is_valid = stored_user.is_password_valid(user.password)
         if not is_valid:
             raise InvalidUsernameOrPassword()

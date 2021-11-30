@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Any, Optional
 
 from src.users.user_model import StoredUser
 
@@ -7,22 +7,13 @@ from src.users.user_model import StoredUser
 class UserRepository(ABC):
 
     @abstractmethod
-    def add_user(self, username: str, salt_blank_hash: str) -> None:
-        """
-        Adds a user to repositories
-        :param username: user's username
-        :param salt_blank_hash: string with salt a blank space and a hash created using password + salt
-        :return: None
-        """
+    def add_user(self, username: str, salt_blank_hash: str) -> Optional[str]:
+        """Adds a user to repositories"""
         ...
 
     @abstractmethod
-    def delete_user(self, user_id: int) -> None:
-        """
-        Deletes a user using as reference its id
-        :param user_id: an integer
-        :return: None
-        """
+    def delete_user(self, user_id: int) -> Optional[Any]:
+        """Deletes a user using as reference its id"""
         ...
 
     @abstractmethod
@@ -32,20 +23,10 @@ class UserRepository(ABC):
             username: Optional[str] = None,
             salt_blank_hash: Optional[str] = None,
     ) -> None:
-        """
-        Updates an user using by reference its id;
-        :param user_id: user's id
-        :param username: user's username
-        :param salt_blank_hash: string with salt a blank space and a hash created using password + salt
-        :return: None
-        """
+        """Updates an user using by reference its id"""
         ...
 
     @abstractmethod
-    def find(self, username: str) -> StoredUser:
-        """
-        Finds a user using its username as reference
-        :param username: user's username
-        :return: the found user
-        """
+    def find(self, username: str) -> Optional[StoredUser]:
+        """Finds a user using its username as reference"""
         ...
