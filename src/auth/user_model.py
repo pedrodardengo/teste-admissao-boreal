@@ -24,31 +24,36 @@ class IncomingUser(UserIdentifier):
     password: str
 
     @validator("username")
-    def username_must_be_an_email(cls, v):
+    def username_must_be_an_email(cls, username):
         regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
-        if re.fullmatch(regex, v):
+        if not bool(re.fullmatch(regex, username)):
             raise ValueError("Passed email is not valid")
+        return username
 
     @validator("password")
-    def password_must_be_strong(cls, v):
-        at_least_8_characters = len(v) > 8
-        at_least_one_digit = re.search(r"\d", v) is not None
-        at_least_one_uppercase = re.search(r"[A-Z]", v) is not None
-        at_least_one_lowercase = re.search(r"[a-z]", v) is not None
-        at_least_one_symbol = (
-            re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~" + r'"]', v) is not None
+    def password_must_be_strong(cls, password):
+        has_8_characters = len(password) >= 8
+        has_at_least_one_digit = re.search(r"\d", password) is not None
+        has_at_least_one_uppercase = re.search(r"[A-Z]", password) is not None
+        has_at_least_one_lowercase = re.search(r"[a-z]", password) is not None
+        has_at_least_one_symbol = (
+            re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~" + r'"]', password) is not None
         )
         strong_password = all(
             [
-                at_least_8_characters,
-                at_least_one_digit,
-                at_least_one_uppercase,
-                at_least_one_lowercase,
-                at_least_one_symbol,
+                has_8_characters,
+                has_at_least_one_digit,
+                has_at_least_one_uppercase,
+                has_at_least_one_lowercase,
+                has_at_least_one_symbol,
             ]
         )
         if not strong_password:
-            raise ValueError("Passed email is not valid")
+            raise ValueError(
+                "Password must contain a minimum of 8 characters, at least "
+                "one digit, one uppercase, one lowercase and one symbol"
+            )
+        return password
 
     def get_salt_dot_hash(self, salt: Optional[str] = None):
         if salt is None:

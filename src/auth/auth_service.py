@@ -1,10 +1,13 @@
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from jose import jwt
-from starlette import status
 
 from src.auth.token_model import Token
 from src.auth.user_model import IncomingUser, StoredUser
-from src.exceptions.invalid_username_or_password import InvalidUsernameOrPassword
+from src.exceptions.exceptions import (
+    CouldNotValidate,
+    InvalidUsernameOrPassword,
+    TokenHasExpired,
+)
 from src.settings.settings import Settings, settings_factory
 from src.user_repository.sql_user_repository import sql_user_repository_factory
 from src.user_repository.user_repository_interface import UserRepository
@@ -20,14 +23,11 @@ class AuthService:
         self.__user_repo.add_user(user.username, salt_dot_hash)
 
     def authenticate_user(self, user: IncomingUser) -> str:
-        try:
-            stored_user = self.__user_repo.find(user.username)
-            is_valid = stored_user.is_password_valid(user.password)
-            if not is_valid:
-                raise InvalidUsernameOrPassword
-            return user.username
-        except InvalidUsernameOrPassword as error:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=error)
+        stored_user = self.__user_repo.find(user.username)
+        is_valid = stored_user.is_password_valid(user.password)
+        if not is_valid:
+            raise InvalidUsernameOrPassword()
+        return user.username
 
     def create_access_token(self, username: str) -> Token:
         data_to_encode = {"sub": username, "exp": self.__settings.get_expiration_date()}
@@ -40,16 +40,9 @@ class AuthService:
             user = self.__user_repo.find(data.get("sub"))
             return user
         except jwt.ExpiredSignatureError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired"
-            )
-        except InvalidUsernameOrPassword as error:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=error)
+            raise TokenHasExpired()
         except Exception as error:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Could not validate token: {error}",
-            )
+            raise CouldNotValidate(str(error))
 
 
 def auth_service_factory(

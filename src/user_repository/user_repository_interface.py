@@ -23,7 +23,7 @@ class UserRepository(ABC):
         ...
 
     @abstractmethod
-    def find_one(self, user_id: int) -> StoredUser:
+    def find_by_id(self, user_id: int) -> StoredUser:
         ...
 
     @abstractmethod

@@ -15,10 +15,10 @@ def get_user_from_token(
 ) -> StoredUser:
     """
     Every end point that wants to be protected by a OAuth2 standard needs to depend on this function.
-    It will make sure a user can be retrived from token
+    It will make sure a user can be retrieved from token
     :param token: A access_token
     :param auth_service: The authorization
-    :return:
+    :return: a user
     """
     return auth_service.retrieve_user_from_token(token)
 
@@ -55,11 +55,11 @@ async def get_access_token(
 
 @router.get("/me")
 async def get_request_user(
-    current_user: StoredUser = Depends(get_user_from_token),
+    request_user: StoredUser = Depends(get_user_from_token),
 ) -> UserIdentifier:
     """
     Provides the user from this request's token.
-    :param current_user: the User provided from get_user_from_token
+    :param request_user: the User provided from get_user_from_token
     :return: only the username
     """
-    return UserIdentifier(username=current_user.username)
+    return UserIdentifier(username=request_user.username)
