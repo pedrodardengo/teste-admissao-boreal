@@ -2,7 +2,9 @@ from functools import lru_cache
 from typing import Optional
 
 import sqlmodel
+from fastapi import Depends
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.pool import StaticPool
 
 from src.auth.user_model import StoredUser
 from src.exceptions.exceptions import (
@@ -10,7 +12,7 @@ from src.exceptions.exceptions import (
     UserAlreadyExists,
     UserDontExists,
 )
-from src.settings.settings import settings_factory
+from src.settings.settings import Settings, settings_factory
 from src.user_repository.user_repository_interface import UserRepository
 
 
@@ -27,9 +29,16 @@ class SQLUserRepository(UserRepository):
     To use a different database just set a new database connection string in the environment settings.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, settings: Settings) -> None:
         """Connects to SQL database"""
-        self.__engine = sqlmodel.create_engine(settings_factory().DB_CONNECTION_STRING)
+        if settings.DB_CONNECTION_STRING == "sqlite://":
+            self.__engine = sqlmodel.create_engine(
+                settings.DB_CONNECTION_STRING,
+                connect_args={"check_same_thread": False},
+                poolclass=StaticPool,
+            )
+        else:
+            self.__engine = sqlmodel.create_engine(settings.DB_CONNECTION_STRING)
         sqlmodel.SQLModel.metadata.create_all(self.__engine, checkfirst=True)
 
     def add_user(self, username: str, salt_dot_hash: str) -> None:
@@ -85,5 +94,7 @@ class SQLUserRepository(UserRepository):
 
 
 @lru_cache
-def sql_user_repository_factory() -> SQLUserRepository:
-    return SQLUserRepository()
+def sql_user_repository_factory(
+    settings: Settings = Depends(settings_factory),
+) -> SQLUserRepository:
+    return SQLUserRepository(settings)

@@ -11,34 +11,42 @@ from src.exceptions.exceptions import (
 )
 
 
-def unauthorized_response(error_message: str) -> JSONResponse:
-    return JSONResponse(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        content={"error": error_message},
-    )
-
-
 def invalid_username_or_password_handler(
     request: Request, exc: InvalidUsernameOrPassword
 ) -> JSONResponse:
-    return unauthorized_response("Username or password is invalid")
+    return JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content={"error": "Username or password is invalid"},
+    )
 
 
 def user_already_exists_handler(
     request: Request, exc: UserAlreadyExists
 ) -> JSONResponse:
-    return unauthorized_response(f"The username: {exc.username} is already in use")
+    return JSONResponse(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        content={"error": f"The username: {exc.username} is already in use"},
+    )
 
 
 def user_dont_exists_handler(request: Request, exc: UserDontExists) -> JSONResponse:
-    return unauthorized_response(
-        "An User could not be found to perform the required operation"
+    return JSONResponse(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        content={
+            "error": "An User could not be found to perform the required operation"
+        },
     )
 
 
 def token_has_expired_handler(request: Request, exc: TokenHasExpired) -> JSONResponse:
-    return unauthorized_response("The token has expired.")
+    return JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content={"error": "The token has expired."},
+    )
 
 
 def could_not_validate_handler(request: Request, exc: CouldNotValidate) -> JSONResponse:
-    return unauthorized_response(f"It was not possible to validate token: {exc.detail}")
+    return JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content={"error": "It was not possible to validate token"},
+    )

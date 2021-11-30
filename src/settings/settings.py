@@ -16,6 +16,9 @@ class Settings(BaseSettings):
         now = datetime.now(pytz.timezone("America/Sao_Paulo"))
         return now + timedelta(minutes=self.MINUTES_FOR_TOKEN_EXPIRATION)
 
+    def __hash__(self):
+        return hash(self.DB_CONNECTION_STRING)
+
 
 @lru_cache
 def settings_factory() -> Settings:

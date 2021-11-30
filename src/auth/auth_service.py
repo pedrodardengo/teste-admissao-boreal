@@ -41,8 +41,8 @@ class AuthService:
             return user
         except jwt.ExpiredSignatureError:
             raise TokenHasExpired()
-        except Exception as error:
-            raise CouldNotValidate(str(error))
+        except Exception:
+            raise CouldNotValidate()
 
 
 def auth_service_factory(

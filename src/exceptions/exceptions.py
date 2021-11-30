@@ -20,6 +20,5 @@ class TokenHasExpired(Exception):
 
 
 class CouldNotValidate(Exception):
-    def __init__(self, detail: str) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.detail = detail
