@@ -22,7 +22,7 @@ class Settings(BaseSettings):
 
     def __hash__(self):
         """Is only here in order to allow this class to be cached"""
-        return hash(self.DB_CONNECTION_STRING)
+        return hash(str(self))
 
 
 @lru_cache

@@ -1,10 +1,10 @@
 from functools import lru_cache
 from typing import Optional
 
-from src.auth.user_model import StoredUser
 from src.exceptions.exceptions import (InvalidUsernameOrPassword,
                                        UserAlreadyExists)
-from src.user_repository.user_repository_interface import UserRepository
+from src.users.user_model import StoredUser
+from src.users.user_repository_interface import UserRepository
 
 
 class FakeUserRepository(UserRepository):

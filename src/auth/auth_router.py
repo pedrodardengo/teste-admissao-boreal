@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from src.auth.auth_service import AuthService, auth_service_factory
 from src.auth.token_model import Token
-from src.auth.user_model import IncomingUser, StoredUser
+from src.users.user_model import IncomingUser, StoredUser
 
 router = APIRouter(prefix="/auth")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
@@ -28,7 +28,8 @@ async def sign_up(
         user: IncomingUser, auth_service: AuthService = Depends(auth_service_factory)
 ) -> None:
     """
-    Signs up the user in the repository, it delegates to the auth service the task of interacting with the repository.
+    Signs up the user in the repositories, it delegates to the
+    auth service the task of interacting with the repositories.
     :param user: a User with username and password
     :param auth_service: An instance of an authorization service.
     :return: None

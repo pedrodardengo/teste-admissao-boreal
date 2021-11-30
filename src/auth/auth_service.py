@@ -4,13 +4,14 @@ from fastapi import Depends
 from jose import jwt
 
 from src.auth.token_model import Token
-from src.auth.user_model import IncomingUser, StoredUser
 from src.exceptions.exceptions import (CouldNotValidate,
                                        InvalidUsernameOrPassword,
                                        TokenHasExpired)
 from src.settings.settings import Settings, settings_factory
-from src.user_repository.sql_user_repository import sql_user_repository_factory
-from src.user_repository.user_repository_interface import UserRepository
+from src.users.repositories.sql_user_repository import \
+    sql_user_repository_factory
+from src.users.user_model import IncomingUser, StoredUser
+from src.users.user_repository_interface import UserRepository
 
 
 class AuthService:

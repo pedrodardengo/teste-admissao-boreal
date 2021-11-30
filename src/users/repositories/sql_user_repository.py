@@ -6,11 +6,11 @@ from fastapi import Depends
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.pool import StaticPool
 
-from src.auth.user_model import StoredUser
 from src.exceptions.exceptions import (InvalidUsernameOrPassword,
                                        UserAlreadyExists, UserDontExists)
 from src.settings.settings import Settings, settings_factory
-from src.user_repository.user_repository_interface import UserRepository
+from src.users.user_model import StoredUser
+from src.users.user_repository_interface import UserRepository
 
 
 class StoredUserTable(StoredUser, sqlmodel.SQLModel, table=True):

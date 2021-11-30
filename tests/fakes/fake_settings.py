@@ -15,7 +15,7 @@ class FakeSettings(BaseModel):
         return now + timedelta(minutes=self.MINUTES_FOR_TOKEN_EXPIRATION)
 
     def __hash__(self):
-        return hash(self.DB_CONNECTION_STRING)
+        return hash(str(self))
 
 
 @lru_cache

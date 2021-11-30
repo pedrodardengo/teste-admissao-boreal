@@ -1,14 +1,15 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from src.auth.user_model import StoredUser
+from src.users.user_model import StoredUser
 
 
 class UserRepository(ABC):
+
     @abstractmethod
     def add_user(self, username: str, salt_blank_hash: str) -> None:
         """
-        Adds a user to repository
+        Adds a user to repositories
         :param username: user's username
         :param salt_blank_hash: string with salt a blank space and a hash created using password + salt
         :return: None
