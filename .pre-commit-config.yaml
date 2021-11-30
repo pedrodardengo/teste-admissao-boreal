@@ -14,7 +14,6 @@ repos:
   - id: debug-statements
   - id: detect-private-key
   - id: end-of-file-fixer
-  - id: name-tests-test
   - id: sort-simple-yaml
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks

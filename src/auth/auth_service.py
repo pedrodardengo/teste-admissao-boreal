@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from fastapi import Depends
 from jose import jwt
 
@@ -70,6 +72,7 @@ class AuthService:
             raise CouldNotValidate()
 
 
+@lru_cache
 def auth_service_factory(
         user_repository: UserRepository = Depends(sql_user_repository_factory),
         settings: Settings = Depends(settings_factory),

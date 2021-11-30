@@ -2,32 +2,32 @@ import aiohttp
 from fastapi import APIRouter, Depends
 
 from src.auth.auth_router import get_user_from_token
-from src.auth.user_model import StoredUser
 from src.breweries.brewerie_models import BreweriesList
 from src.breweries.order_model import Order
 
-router = APIRouter(prefix="/breweries")
+router = APIRouter(
+    prefix="/breweries",
+    dependencies=[
+        Depends(get_user_from_token)
+    ]
+)
 
 
-@router.post("/")
-async def post_order(
-        order: Order, request_user: StoredUser = Depends(get_user_from_token)
-):
+@router.post("")
+async def post_order(order: Order) -> Order:
     """
     Implements the second assignment of the test.
     :param order: a Order model
-    :param request_user: Used for authorization
     :return: a Order Model
     """
     return order
 
 
-@router.get("/")
-async def get_all_breweries(request_user: StoredUser = Depends(get_user_from_token)):
+@router.get("")
+async def get_all_breweries() -> BreweriesList:
     """
     Implements the third assignment of test.
-    :param request_user: Used for authorization
-    :return:
+    :return: A list of breweries names
     """
     url = "https://api.openbrewerydb.org/breweries/"
     async with aiohttp.request("GET", url=url) as response:
