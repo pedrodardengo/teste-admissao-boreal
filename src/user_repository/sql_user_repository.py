@@ -19,7 +19,7 @@ from src.user_repository.user_repository_interface import UserRepository
 class StoredUserTable(StoredUser, sqlmodel.SQLModel, table=True):
     user_id: int = sqlmodel.Field(default=None, primary_key=True)
     username: str = sqlmodel.Field()
-    salt_dot_hash: str = sqlmodel.Field()
+    salt_blank_hash: str = sqlmodel.Field()
 
 
 class SQLUserRepository(UserRepository):
@@ -41,9 +41,9 @@ class SQLUserRepository(UserRepository):
             self.__engine = sqlmodel.create_engine(settings.DB_CONNECTION_STRING)
         sqlmodel.SQLModel.metadata.create_all(self.__engine, checkfirst=True)
 
-    def add_user(self, username: str, salt_dot_hash: str) -> None:
+    def add_user(self, username: str, salt_blank_hash: str) -> None:
         with sqlmodel.Session(self.__engine) as session:
-            user = StoredUserTable(username=username, salt_dot_hash=salt_dot_hash)
+            user = StoredUserTable(username=username, salt_blank_hash=salt_blank_hash)
             stored_user = None
             try:
                 stored_user = self.find(user.username)
@@ -72,7 +72,7 @@ class SQLUserRepository(UserRepository):
         self,
         user_id: int,
         email: Optional[str] = None,
-        salt_dot_hash: Optional[str] = None,
+        salt_blank_hash: Optional[str] = None,
     ) -> None:
         ...
 
@@ -87,7 +87,7 @@ class SQLUserRepository(UserRepository):
                 )
                 user = session.exec(statement).one()
                 return StoredUser(
-                    username=user.username, salt_dot_hash=user.salt_dot_hash
+                    username=user.username, salt_blank_hash=user.salt_blank_hash
                 )
             except NoResultFound:
                 raise InvalidUsernameOrPassword()

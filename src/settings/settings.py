@@ -13,10 +13,15 @@ class Settings(BaseSettings):
     MINUTES_FOR_TOKEN_EXPIRATION: int = 60
 
     def get_expiration_date(self) -> datetime:
+        """
+        Returns the datetime of when the token will expire.
+        :return: a datetime object
+        """
         now = datetime.now(pytz.timezone("America/Sao_Paulo"))
         return now + timedelta(minutes=self.MINUTES_FOR_TOKEN_EXPIRATION)
 
     def __hash__(self):
+        """Is only here in order to allow this class to be cached"""
         return hash(self.DB_CONNECTION_STRING)
 
 
