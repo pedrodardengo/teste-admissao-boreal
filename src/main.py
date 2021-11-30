@@ -12,7 +12,7 @@ from src.exceptions.exceptions import (CouldNotValidate,
                                        TokenHasExpired, UserAlreadyExists,
                                        UserDontExists)
 
-app = FastAPI(title="Teste para Boreal", version="0.1.0")
+app = FastAPI(title="Teste para Boreal", version="0.2.0")
 
 app.add_exception_handler(
     InvalidUsernameOrPassword, invalid_username_or_password_handler

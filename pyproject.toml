@@ -2,11 +2,49 @@
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.commitizen]
+version = "0.2.0"
+tag_format = "$major.$minor.$patch$prerelease"
+update_changelog_on_bump = true
+annotated_tag = true
+check_consistency = true
+version_files = [
+    "VERSION",
+    "pyproject.toml",
+    "src/main.py",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+no_silence_site_packages = true
+disallow_untyped_calls = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_untyped_globals = true
+disallow_redefinition = true
+no_implicit_reexport = true
+pretty = true
+sqlite_cache = true
+no_site_packages = true
+
+[[tool.mypy.overrides]]
+module = ["faker.*", "dotenv.*", "redis.*"]
+follow_imports = "skip"
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["pydantic.*"]
+no_implicit_optional = false
+warn_unused_ignores = false
+disallow_untyped_calls = false
+disallow_untyped_globals = false
+
 [tool.poetry]
 name = "admission_test_boreal"
-version = "0.1.0"
-description = ""
-authors = ["pedro <pedro.mesquita.ext@decode.buzz>"]
+version = "0.2.0"
+description = "Este é um teste de admissão para a empresa Boreal"
+authors = ["pedro <pedrodardengo@hotmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
