@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from src.auth import auth_router
+from src.breweries import brewerie_router
 from src.exceptions.auth_handlers import (
     could_not_validate_handler,
     invalid_username_or_password_handler,
@@ -28,3 +29,4 @@ app.add_exception_handler(CouldNotValidate, could_not_validate_handler)
 
 
 app.include_router(auth_router.router)
+app.include_router(brewerie_router.router)
