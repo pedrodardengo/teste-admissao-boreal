@@ -15,9 +15,14 @@ Desenvolva uma API com a biblioteca FastAPI, com os seguintes requisitos:
 
 ### Utilizando Docker
 Abra o terminal na pasta do raiz do projeto insira `make doceker-run`.
-Use `make docs` para acessar a documentação automática do swagger da aplicação.
+
+Use `make docs` para acessar a documentação automática do swagger da aplicação. 
 
 ### Local
 Instale as dependencias de produção do Poetry e execute o arquivo no caminho `./src/dev_server`.
-Poderia ter criado um cli para isso... Depois que fizer isso use `make docs` para acessar a documentação 
-automática do swagger da aplicação.
+Poderia ter criado um cli para isso...
+
+
+## Documentação Swagger
+Use `make docs` para acessar a documentação automática do swagger da aplicação caso vc possua o Google Chrome, ou
+simmplesmente acesse http://localhost:8000/docs
