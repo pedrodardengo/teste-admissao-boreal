@@ -6,7 +6,7 @@ from src import main
 
 if __name__ == "__main__":
     os.environ["DB_CONNECTION_STRING"] = "sqlite://"
-    os.environ["TOKEN_SECRET"] = "AU890SU8903HU9FAU89as9783e783rfasdf9"
+    os.environ["TOKEN_SECRET"] = "AFakeTokenSecret"
     uvicorn.run(
         f"{main.__name__}:app",
         host="0.0.0.0",

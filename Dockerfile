@@ -1,6 +1,6 @@
 FROM python:3.9 AS build-image
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends build-essential gcc git musl-dev python3-dev libffi-dev g++
+RUN apt-get install -y --no-install-recommends build-essential gcc musl-dev python3-dev libffi-dev g++
 
 # Activating VENV
 ENV VIRTUAL_ENV=/opt/venv
